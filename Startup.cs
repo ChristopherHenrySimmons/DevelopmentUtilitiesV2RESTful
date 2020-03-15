@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using DevelopmentUtilitiesV2RESTful.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DevelopmentUtilitiesV2RESTful
 {
@@ -28,6 +30,22 @@ namespace DevelopmentUtilitiesV2RESTful
           public void ConfigureServices(IServiceCollection services)
           {
                services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+               services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+              .AddJwtBearer(options => {
+                   options.TokenValidationParameters =
+                        new TokenValidationParameters
+                        {
+                             ValidateIssuer = true,
+                             ValidateAudience = true,
+                             ValidateLifetime = true,
+                             ValidateIssuerSigningKey = true,
+
+                             ValidIssuer = "Fiver.Security.Bearer",
+                             ValidAudience = "Fiver.Security.Bearer",
+                             IssuerSigningKey =
+                             JwtSecurityKey.Create("fiversecret ")
+                        };
+              });
 
                services.AddDbContext<DevelopmentUtilitiesV2Context>
                (options => options.UseSqlServer
@@ -38,6 +56,7 @@ namespace DevelopmentUtilitiesV2RESTful
           // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
           public void Configure(IApplicationBuilder app, IHostingEnvironment env)
           {
+               app.UseAuthentication();
                if (env.IsDevelopment())
                {
                     app.UseDeveloperExceptionPage();
