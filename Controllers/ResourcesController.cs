@@ -6,10 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using DevelopmentUtilitiesV2RESTful.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DevelopmentUtilitiesV2RESTful.Controllers
 {
-    [Route("api/v2/[controller]")]
+     [Authorize]
+     [Route("api/v2/[controller]")]
     [ApiController]
     public class ResourcesController : ControllerBase
     {
